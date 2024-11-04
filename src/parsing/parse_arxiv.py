@@ -41,7 +41,7 @@ def parse_arxiv(category: str,
 
 
 def parse_summary(categories: list[str],
-                  number: int = 10) -> list[tuple]:
+                  number: int = 1000) -> list[tuple]:
     data = []
     for cat in categories:
         out = parse_arxiv(category=cat, fields=['summary'], number=number)
