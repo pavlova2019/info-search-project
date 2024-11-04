@@ -1,0 +1,12 @@
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Python build artifacts
+__pycache__/
+
+# Ignore the data folder
+data/
+
+# Ignore the cache folder
+hfcache/
+
