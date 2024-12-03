@@ -10,3 +10,6 @@ data/
 # Ignore the cache folder
 hfcache/
 
+# Ignore IDE folder
+.vscode/
+

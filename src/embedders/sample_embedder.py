@@ -1,16 +1,33 @@
-from util.chunk import Chunk
+from langchain_core.embeddings import Embeddings
+from langchain_core.pydantic_v1 import BaseModel
 
-EmbeddedVector = list[float] # TODO: this is a mock vector, replace it with something else
+from util.key_imports import *
 
-class EmbedderModel:
-    # TODO
 
-    def embed(chunks: list[Chunk]) -> list[EmbeddedVector]:
-        # TODO
+class EmbeddingModel(Embeddings, BaseModel):
+    tokenizer: Any
+    device: str
+    model: Any
+    max_length: int
+    model_name: str
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.model_name = kwargs["model_name"]
+        self.tokenizer = AutoTokenizer.from_pretrained(kwargs["model_path"])
+        self.device = kwargs["device"]
+        self.model = AutoModel.from_pretrained(kwargs["model_path"]).to(self.device)
+        self.max_length = kwargs["max_length"]
+
+    @property
+    def _llm_type(self) -> str:
+        return self.version
+
+    def _encode(self, text):
         pass
 
-    def embed(chunk: Chunk) -> EmbeddedVector:
-        # TODO
+    def embed_documents(self, text: str) -> List[EmbeddingVector]:
         pass
 
-    pass
+    def embed_query(self, text: str) -> EmbeddingVector:
+        pass
