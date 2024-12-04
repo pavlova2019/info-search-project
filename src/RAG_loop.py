@@ -1,3 +1,4 @@
+from time import sleep
 from typing import List
 
 from embedders.sample_embedder import EmbeddingModel
@@ -5,13 +6,14 @@ from text_gen.sample_model import LanguageModel
 from util.article import Article
 from parsing.sample_parser import load_articles
 
-from faiss import IndexFlatL2
+from faiss import IndexHNSWFlat
 
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.llms.langchain import LangChainLLM
-from llama_index.core import VectorStoreIndex
+from llama_index.core import VectorStoreIndex, StorageContext, Settings
 from llama_index.core.node_parser import TokenTextSplitter
 from llama_index.core.ingestion import IngestionPipeline
+from llama_index.core.storage.docstore import SimpleDocumentStore
 
 # placeholders
 from llama_index.core.embeddings import MockEmbedding
@@ -20,10 +22,13 @@ from llama_index.core.llms import MockLLM
 articles: List[Article] = load_articles(10)
 
 embedding_dim = 16
+M = 4
 
-faiss_index = IndexFlatL2(embedding_dim)
+faiss_index = IndexHNSWFlat(embedding_dim, M)
+faiss_index.verbose = True
 vector_store = FaissVectorStore(faiss_index=faiss_index)
 vector_store.stores_text = True
+
 
 # params_embed = {   # выкинуть в конфиг
 #     "model_name": "...",
@@ -41,18 +46,6 @@ splitter = TokenTextSplitter(
     separator=" "
 )
 
-pipeline = IngestionPipeline(
-    transformations=[
-        splitter,
-        embedder_model,
-    ],
-    vector_store=vector_store,
-)
-
-nodes = pipeline.run(show_progress=True, documents=articles, num_workers=1)
-# print(len(nodes), nodes[0].node_id)
-print(vector_store.client)
-
 # GENERATE_CONFIG = {   # выкинуть в конфиг
 #     "max_length": 4096,
 #     "temperature": 1e-15,
@@ -65,12 +58,23 @@ print(vector_store.client)
 # )
 # llm_model = LangChainLLM(llm=llm)
 
-llm_model = MockLLM(max_tokens=1024)
+llm_model = MockLLM(max_tokens=32)
 
-index = VectorStoreIndex.from_vector_store(vector_store=vector_store, embed_model=embedder_model)
+storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+index = VectorStoreIndex.from_documents(
+    documents=articles,
+    transformations=[
+        splitter,
+        embedder_model
+    ],
+    embed_model=embedder_model,
+    storage_context=storage_context,
+    store_nodes_override=True
+)
 query_engine = index.as_query_engine(llm=llm_model)
 
-response = query_engine.query("Which article is the coolest?") # падает с KeyError: '0' где-то в обращении к nodes_dict[ids]
+response = query_engine.query("Which article is the coolest?")
 print(response)
 
 
