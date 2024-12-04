@@ -19,7 +19,7 @@ from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.core.embeddings import MockEmbedding
 from llama_index.core.llms import MockLLM
 
-articles: List[Article] = load_articles(10)
+articles: List[Article] = load_articles(1)
 
 embedding_dim = 16
 M = 4
