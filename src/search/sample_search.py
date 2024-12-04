@@ -1,10 +1,5 @@
-from db.sample_db import DB
-from embedders.sample_embedder import EmbeddedVector
-from util.chunk import Chunk
+from llama_index.core.query_engine import BaseQueryEngine
 
-class SearchModel:
-    # TODO
 
-    def search(db: DB, query: EmbeddedVector) -> list[Chunk]:
-        # TODO
-        pass
+class FaissQueryEngine(BaseQueryEngine):
+    pass
