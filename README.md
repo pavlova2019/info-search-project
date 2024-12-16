@@ -6,4 +6,3 @@ A collaborative group project for an Information Search course, building a RAG m
 To start the telegram-bot, run the following command:
 ```bash
 python -m src.bot_loop
-'''

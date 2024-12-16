@@ -20,7 +20,7 @@ default_cache = './hfcache'
 
 for var in cache_vars:
     if not os.environ.get(var):
-        os.environ[var] = default_value
+        os.environ[var] = default_cache
 
 
 # hyperparameters
