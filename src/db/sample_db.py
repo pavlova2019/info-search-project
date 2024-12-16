@@ -1,3 +1,0 @@
-class DB:
-    # TODO
-    pass

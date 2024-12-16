@@ -6,11 +6,12 @@ class Article(Document):
 
     def __init__(self, text: str, article_id: ArticleId, abstract_text: str):
         super().__init__(
-            text=text,
+            text=f"{abstract_text}\n\n{text}",
             metadata={
-                "abstract_text": abstract_text
+                "article_id": article_id
             },
-            # excluded_llm_metadata_keys=["article_id"],
+            excluded_llm_metadata_keys=["article_id"],
+            excluded_embed_metadata_keys=["article_id"],
             metadata_seperator="::",
             metadata_template="{key}=>{value}",
             text_template="Metadata: {metadata_str}\n-----\nContent: {content}",

@@ -4,8 +4,11 @@
 # Ignore Python build artifacts
 __pycache__/
 
-# Ignore the data folder
-data/
+# Ignore the data
+*.json
+*.csv
+*.db
+*.index
 
 # Ignore the cache folder
 hfcache/
@@ -13,3 +16,5 @@ hfcache/
 # Ignore IDE folder
 .vscode/
 
+# Ignore environment variables
+.env
