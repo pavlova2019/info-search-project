@@ -29,10 +29,12 @@ similarity_top_k = 10
 
 
 LLM_MODEL = Literal[
-    "nvidia/Llama3-ChatQA-1.5-8B",
+    "nvidia/Llama3-ChatQA-2-8B",
+    "mistralai/Mistral-Nemo-Instruct-2407",
+    "Qwen/Qwen2.5-7B-Instruct",
 ]
 
-llm_model_name: LLM_MODEL = "nvidia/Llama3-ChatQA-1.5-8B"
+llm_model_name: LLM_MODEL = "nvidia/Llama3-ChatQA-2-8B"
 
 
 EMBED_MODEL = Literal[

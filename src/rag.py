@@ -47,3 +47,13 @@ query_engine = creating_query_engine()
 
 def query_rag_system(query):
     return str(query_engine.query(query))
+
+
+if __name__ == "__main__":
+    while True:
+        try:
+            query = input("\nYour question: ")
+            print(query_rag_system(query))
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            
