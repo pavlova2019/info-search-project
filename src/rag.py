@@ -9,12 +9,15 @@ from src.vector_store.vector_store import collect_and_write_index, load_index
 
 def creating_query_engine(
     llm_model_name: str = cfg.llm_model_name,
-    max_new_tokens: int = 512,
+    max_new_tokens: int = cfg.max_new_tokens,
+    top_k_chunks: int = cfg.similarity_top_k,
     query_embed_model_name: str = cfg.embed_model_name,
-    query_embed_kwargs: Optional[dict] = None,
+    query_embed_kwargs: Optional[dict] = cfg.query_embed_kwargs,
     chunk_embed_model_name: str = cfg.embed_model_name,
-    chunk_embed_kwargs: Optional[dict] = None,
+    chunk_embed_kwargs: Optional[dict] = cfg.chunk_embed_kwargs,
     index_path: str = cfg.VECTOR_INDEX,
+    rating_db_path: str = cfg.RATINGS_DB_PATH,
+    article_path: str = cfg.TEST_DATASET,
 ):
     query_embed_model = load_embedder(query_embed_model_name, model_kwargs=query_embed_kwargs)
     chunk_embed_model = load_embedder(chunk_embed_model_name, model_kwargs=chunk_embed_kwargs)
@@ -23,10 +26,10 @@ def creating_query_engine(
     if os.path.exists(index_path):
         index = load_index(chunk_embed_model, index_path)
     else:
-        index = collect_and_write_index(chunk_embed_model, index_path)
+        index = collect_and_write_index(chunk_embed_model, index_path, article_path)
 
     # check ratings db
-    if not os.path.exists(cfg.RATINGS_DB_PATH):
+    if not os.path.exists(rating_db_path):
         setup_database()
 
     llm = load_llm(llm_model_name, max_new_tokens)
@@ -34,16 +37,13 @@ def creating_query_engine(
     query_engine = index.as_query_engine(
         embed_model=query_embed_model,
         llm=llm,
-        similarity_top_k=cfg.similarity_top_k,
+        similarity_top_k=top_k_chunks,
     )
 
     return query_engine
 
 
-query_engine = creating_query_engine(
-    query_embed_kwargs=cfg.query_embed_kwargs,
-    chunk_embed_kwargs=cfg.chunk_embed_kwargs
-)
+query_engine = creating_query_engine()
 
 def query_rag_system(query):
     return str(query_engine.query(query))

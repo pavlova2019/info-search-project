@@ -1,10 +1,9 @@
-import src.config as cfg
 from src.text_gen.llm_config import models_config
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.core import PromptTemplate
 
 
-def load_llm(model_name: cfg.LLM_MODEL = cfg.llm_model_name, max_new_tokens: int = 512):
+def load_llm(model_name: str, max_new_tokens: int = 512):
     if model_name not in models_config:
         raise ValueError(f"{model_name} is not supported.")
 

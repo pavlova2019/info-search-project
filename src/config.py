@@ -24,6 +24,7 @@ for var in cache_vars:
 
 
 # hyperparameters
+max_new_tokens = 512
 similarity_top_k = 10
 
 

@@ -1,14 +1,12 @@
-from datetime import datetime, timezone
+from datetime import timezone
 
 from telegram import (
     Update,
     InlineKeyboardButton,
     InlineKeyboardMarkup, 
-    KeyboardButton,
 )
 
 from telegram.ext import (
-    Application,
     ContextTypes,
     CommandHandler,
     MessageHandler,

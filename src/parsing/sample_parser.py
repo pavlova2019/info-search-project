@@ -1,11 +1,9 @@
+import pandas as pd
 from typing import Optional
 from src.util.article import Article
-import src.config as cfg
-
-import pandas as pd
 
 
-def load_articles(filepath: str = cfg.TEST_DATASET, n: Optional[int] = None):
+def load_articles(filepath: str, n: Optional[int] = None):
     dataset_small = pd.read_json(filepath, lines=True)
     n = len(dataset_small) if not n else n
     return [Article(
