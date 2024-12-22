@@ -22,10 +22,12 @@ for var in cache_vars:
     if not os.environ.get(var):
         os.environ[var] = default_cache
 
+CACHE_DIR = os.environ.get('HF_HOME')
+
 
 # hyperparameters
 max_new_tokens = 512
-similarity_top_k = 10
+similarity_top_k = 5
 
 
 LLM_MODEL = Literal[

@@ -2,7 +2,7 @@ import os
 import src.config as cfg
 from typing import Optional
 from src.db.db import setup_database
-from src.text_gen.llm import load_llm
+from src.text_gen.llm import load_llm_and_qa_tmpl
 from src.embedders.embedder import load_embedder
 from src.vector_store.vector_store import collect_and_write_index, load_index
 
@@ -32,12 +32,13 @@ def creating_query_engine(
     if not os.path.exists(rating_db_path):
         setup_database()
 
-    llm = load_llm(llm_model_name, max_new_tokens)
+    llm, qa_prompt_tmpl = load_llm_and_qa_tmpl(llm_model_name, max_new_tokens, cfg.CACHE_DIR)
 
     query_engine = index.as_query_engine(
-        embed_model=query_embed_model,
         llm=llm,
+        embed_model=query_embed_model,
         similarity_top_k=top_k_chunks,
+        text_qa_template=qa_prompt_tmpl,
     )
 
     return query_engine
@@ -56,4 +57,3 @@ if __name__ == "__main__":
             print(query_rag_system(query))
         except Exception as e:
             print(f"An error occurred: {e}")
-            
