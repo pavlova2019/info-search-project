@@ -85,6 +85,8 @@ class CustomVllm(Vllm):
             completion_to_prompt=completion_to_prompt,
             pydantic_program_mode=pydantic_program_mode,
             output_parser=output_parser,
+            tensor_parallel_size=tensor_parallel_size,
+            trust_remote_code=trust_remote_code
         )
 
         self.repetition_penalty = repetition_penalty
@@ -141,8 +143,9 @@ class CustomVllm(Vllm):
             self._client.generate(self.system_prompt, sampling_params, use_tqdm=False)
 
     def _save_metrics(self, metrics: RequestMetrics, prompt: str):
-        # pass
-        print(metrics.finished_time - metrics.arrival_time)
+        # to save metrics to local db
+        pass
+        # print(metrics.finished_time - metrics.arrival_time)
         # print(f"\n\n\nPrompt: {prompt}\n\n\n")
 
     @llm_completion_callback()
@@ -175,7 +178,7 @@ def load_llm_and_qa_tmpl(model_name: str, max_new_tokens: int, cache_dir: str):
         vllm_kwargs=vllm_config,
         download_dir=cache_dir,
         trust_remote_code=True,
-        tensor_parallel_size=2,
+        tensor_parallel_size=1,
         **models_config[model_name].generate_config
     )
     
