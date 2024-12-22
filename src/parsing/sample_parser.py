@@ -1,13 +1,24 @@
 import pandas as pd
 from typing import Optional
-from src.util.article import Article
+from src.util.article import Article, Timestamp
+import numpy as np
 
 
 def load_articles(filepath: str, n: Optional[int] = None):
-    dataset_small = pd.read_json(filepath, lines=True)
-    n = len(dataset_small) if not n else n
-    return [Article(
-        text=dataset_small["article_text"][i],
-        article_id=dataset_small["article_id"][i],
-        abstract_text=dataset_small["abstract_text"][i]
-    ) for i in range(n)]
+    data = pd.read_json(filepath, lines=True)
+    data = data[:10]
+    n = len(data) if not n else n
+    return data.apply(create_article, axis=1, raw=True)
+
+
+def create_article(row: np.ndarray):
+    return Article(
+        article_id=row[0],
+        text="\n\n".join(key + "\n\n" + val for key,
+                         val in row[18].items() if key != "title_text"),
+        published=Timestamp(row[5]),
+        title=row[7],
+        authors=[dct["name"] for dct in row[11]],
+        category=row[19],
+        tags=[dct["term"] for dct in row[16]]
+    )
