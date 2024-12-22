@@ -87,7 +87,8 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response_text = response_info['response_text']
         
         # Save the rating to db
-        save_rating(user_id, message_id, query, response_text, rating)
+        db_path = context.bot_data.get('ratings_db_path')
+        save_rating(user_id, message_id, query, response_text, rating, db_path)
         
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -100,8 +101,9 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-def register_handlers(application, bot_startup_time):
+def register_handlers(application, bot_startup_time, ratings_db_path):
     application.bot_data['bot_startup_time'] = bot_startup_time
+    application.bot_data['ratings_db_path'] = ratings_db_path
     
     application.add_handler(CommandHandler('start', start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))

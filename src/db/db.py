@@ -1,8 +1,7 @@
+import os
 import sqlite3
-import src.config as cfg
 
-
-def setup_database(path: str = cfg.RATINGS_DB_PATH):
+def setup_database(path: str):
     conn = sqlite3.connect(path)
     cursor = conn.cursor()
     cursor.execute('''
@@ -18,8 +17,11 @@ def setup_database(path: str = cfg.RATINGS_DB_PATH):
     conn.close()
 
 
-def save_rating(user_id: int, message_id: int, query: str, response: str,
-                rating: str, path: str = cfg.RATINGS_DB_PATH):
+def save_rating(user_id: int, message_id: int, query: str,
+                response: str, rating: str, path: str):
+    if not os.path.exists(path):
+        setup_database(path)
+        
     conn = sqlite3.connect(path)
     cursor = conn.cursor()
     cursor.execute('''
@@ -28,4 +30,3 @@ def save_rating(user_id: int, message_id: int, query: str, response: str,
     ''', (user_id, message_id, query, response, rating))
     conn.commit()
     conn.close()
-    

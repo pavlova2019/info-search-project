@@ -1,43 +1,54 @@
 import os
-import src.config as cfg
-from typing import Optional
+import yaml
+import src.config
+from typing import Optional, Dict
 from src.db.db import setup_database
 from src.text_gen.llm import load_llm_and_qa_tmpl
 from src.embedders.embedder import load_embedder
-from src.vector_store.vector_store import collect_and_write_index, load_index
+from src.storing.storing import load_retriever
+from llama_index.core.query_engine import RetrieverQueryEngine
 
+# loading hyperparameters
+with open('config.yaml', 'r') as f:
+    hyps = yaml.safe_load(f)
+    
 
 def creating_query_engine(
-    llm_model_name: str = cfg.llm_model_name,
-    max_new_tokens: int = cfg.max_new_tokens,
-    top_k_chunks: int = cfg.similarity_top_k,
-    query_embed_model_name: str = cfg.embed_model_name,
-    query_embed_kwargs: Optional[dict] = cfg.query_embed_kwargs,
-    chunk_embed_model_name: str = cfg.embed_model_name,
-    chunk_embed_kwargs: Optional[dict] = cfg.chunk_embed_kwargs,
-    index_path: str = cfg.VECTOR_INDEX,
-    rating_db_path: str = cfg.RATINGS_DB_PATH,
-    article_path: str = cfg.TEST_DATASET,
-):
+    llm_model_name: str = hyps['llm_model']['model_name'],
+    max_new_tokens: int = hyps['llm_model']['max_new_tokens'],
+    query_embed_model_name: str = hyps['embed_model']['query_model_name'],
+    query_embed_kwargs: Optional[Dict] = hyps['embed_model']['query_kwargs'],
+    chunk_embed_model_name: str = hyps['embed_model']['chunk_model_name'],
+    chunk_embed_kwargs: Optional[Dict] = hyps['embed_model']['chunk_kwargs'],
+    vector_index_path: str = hyps['paths']['vector_index'],
+    bm25_index_path: str = hyps['paths']['text_index'],
+    k_vector_search: int = hyps['retriever']['k_vector_search'],
+    k_text_search: int = hyps['retriever']['k_text_search'],
+    article_path: str = hyps['paths']['dataset_w_articles'],
+    cache_dir: str = hyps['paths']['cache_dir']
+):        
     query_embed_model = load_embedder(query_embed_model_name, model_kwargs=query_embed_kwargs)
     chunk_embed_model = load_embedder(chunk_embed_model_name, model_kwargs=chunk_embed_kwargs)
 
-    # check index 
-    if os.path.exists(index_path):
-        index = load_index(chunk_embed_model, index_path)
-    else:
-        index = collect_and_write_index(chunk_embed_model, index_path, article_path)
+    llm, qa_prompt_tmpl = load_llm_and_qa_tmpl(
+        llm_model_name,
+        max_new_tokens,
+        cache_dir
+    )
 
-    # check ratings db
-    if not os.path.exists(rating_db_path):
-        setup_database()
+    retriever = load_retriever(
+        vector_index_path,
+        chunk_embed_model,
+        k_vector_search,
+        article_path,
+        bm25_index_path,
+        k_text_search
+    )
 
-    llm, qa_prompt_tmpl = load_llm_and_qa_tmpl(llm_model_name, max_new_tokens, cfg.CACHE_DIR)
-
-    query_engine = index.as_query_engine(
-        llm=llm,
+    query_engine = RetrieverQueryEngine.from_args(
+        retriever=retriever,
         embed_model=query_embed_model,
-        similarity_top_k=top_k_chunks,
+        llm=llm,
         text_qa_template=qa_prompt_tmpl,
     )
 

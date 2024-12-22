@@ -1,4 +1,3 @@
-from src.text_gen.llm_config import models_config, vllm_config
 from typing import Any, Callable, Dict, List, Optional, Sequence
 
 from llama_index.core.base.llms.types import (
@@ -13,6 +12,7 @@ from llama_index.core.llms.callbacks import llm_completion_callback
 from llama_index.core.types import BaseOutputParser, PydanticProgramMode
 from vllm import SamplingParams
 from vllm.sequence import RequestMetrics
+from src.text_gen.llm_config import models_config, vllm_config
 
 
 class CustomVllm(Vllm):
