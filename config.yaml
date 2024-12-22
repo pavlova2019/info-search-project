@@ -1,0 +1,22 @@
+llm_model:
+    model_name: "nvidia/Llama3-ChatQA-2-8B"
+    max_new_tokens: 512
+
+embed_model:
+    query_model_name: "jinaai/jina-embeddings-v3"
+    chunk_model_name: "jinaai/jina-embeddings-v3"
+    query_kwargs:
+        default_task: 'retrieval.query'
+    chunk_kwargs:
+        default_task: 'retrieval.passage'
+
+retriever:
+    k_vector_search: 3
+    k_text_search: 1
+
+paths:
+    dataset_w_articles: './data/small_dataset.json'
+    ratings_db: './data/db/ratings.db'
+    vector_index: './data/db/vector_index'
+    text_index: null  # path to enable bm25 retriever
+    cache_dir: './hfcache'
