@@ -46,7 +46,6 @@ def setup_logs_database(path: str):
 
 
 def save_logs(component: str, metric: int, path: str):
-    print(component, metric, path)
     if not os.path.exists(path):
         setup_logs_database(path)
 

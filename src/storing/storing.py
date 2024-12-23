@@ -35,7 +35,6 @@ class CompositeRetriever(BaseRetriever):
         super().__init__()
         self.logs_path = logs_path
 
-    # @staticmethod
     def _save_metrics(self, time_metric: Dict[int, float]):
         for num, t in time_metric.items():
             save_logs("retreiver_" + str(num), t, self.logs_path)
