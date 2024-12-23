@@ -25,24 +25,27 @@ def creating_query_engine(
     k_vector_search: int = hyps['retriever']['k_vector_search'],
     k_text_search: int = hyps['retriever']['k_text_search'],
     article_path: str = hyps['paths']['dataset_w_articles'],
-    cache_dir: str = hyps['paths']['cache_dir']
+    cache_dir: str = hyps['paths']['cache_dir'],
+    logs_path: str = hyps['paths']['logs_db']
 ):        
-    query_embed_model = load_embedder(query_embed_model_name, model_kwargs=query_embed_kwargs)
-    chunk_embed_model = load_embedder(chunk_embed_model_name, model_kwargs=chunk_embed_kwargs)
+    query_embed_model = load_embedder(query_embed_model_name, logs_path=logs_path, model_kwargs=query_embed_kwargs)
+    chunk_embed_model = load_embedder(chunk_embed_model_name, logs_path=logs_path, model_kwargs=chunk_embed_kwargs)
 
     llm, qa_prompt_tmpl = load_llm_and_qa_tmpl(
         llm_model_name,
         max_new_tokens,
-        cache_dir
+        cache_dir,
+        logs_path
     )
 
     retriever = load_retriever(
         vector_index_path,
         chunk_embed_model,
+        logs_path,
         k_vector_search,
         article_path,
         bm25_index_path,
-        k_text_search
+        k_text_search,
     )
 
     query_engine = RetrieverQueryEngine.from_args(

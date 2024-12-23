@@ -13,6 +13,7 @@ from llama_index.core.types import BaseOutputParser, PydanticProgramMode
 from vllm import SamplingParams
 from vllm.sequence import RequestMetrics
 from src.text_gen.llm_config import models_config, vllm_config
+from src.db.db import save_logs
 
 
 class CustomVllm(Vllm):
@@ -35,6 +36,7 @@ class CustomVllm(Vllm):
     def __init__(
         self,
         model: str,
+        logs_path: str,
         temperature: float = 1.0,
         tensor_parallel_size: int = 1,
         trust_remote_code: bool = True,
@@ -97,7 +99,8 @@ class CustomVllm(Vllm):
         # warmup so that the shared prompt's KV cache is computed.
         if vllm_kwargs.get("enable_prefix_caching"):
             self.precompute_kvcache()
-        
+
+        self._logs_path = logs_path
 
     @property
     def _model_kwargs(self) -> Dict[str, Any]:
@@ -143,10 +146,7 @@ class CustomVllm(Vllm):
             self._client.generate(self.system_prompt, sampling_params, use_tqdm=False)
 
     def _save_metrics(self, metrics: RequestMetrics, prompt: str):
-        # to save metrics to local db
-        pass
-        # print(metrics.finished_time - metrics.arrival_time)
-        # print(f"\n\n\nPrompt: {prompt}\n\n\n")
+        save_logs("llm", metrics.finished_time - metrics.arrival_time, self._logs_path)
 
     @llm_completion_callback()
     def complete(
@@ -163,7 +163,7 @@ class CustomVllm(Vllm):
         return CompletionResponse(text=outputs[0].outputs[0].text)
 
 
-def load_llm_and_qa_tmpl(model_name: str, max_new_tokens: int, cache_dir: str):
+def load_llm_and_qa_tmpl(model_name: str, max_new_tokens: int, cache_dir: str, logs_path: str):
     if model_name not in models_config:
         raise ValueError(f"{model_name} is not supported.")
 
@@ -179,6 +179,7 @@ def load_llm_and_qa_tmpl(model_name: str, max_new_tokens: int, cache_dir: str):
         download_dir=cache_dir,
         trust_remote_code=True,
         tensor_parallel_size=1,
+        logs_path=logs_path,
         **models_config[model_name].generate_config
     )
     

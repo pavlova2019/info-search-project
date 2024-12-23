@@ -17,6 +17,7 @@ retriever:
 paths:
     dataset_w_articles: './data/small_dataset.json'
     ratings_db: './data/db/ratings.db'
-    vector_index: './data/db/vector_index'
+    logs_db: './data/db/logs.db'
+    vector_index: '/storage/st079069/infosearch/test_rag/info-search-project/data/db/vector_index'
     text_index: null  # path to enable bm25 retriever
     cache_dir: './hfcache'

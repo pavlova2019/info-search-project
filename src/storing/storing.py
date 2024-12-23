@@ -1,6 +1,6 @@
 import os, time
 import Stemmer
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
 from llama_index.core import (
     StorageContext,
     load_index_from_storage,
@@ -17,12 +17,14 @@ from transformers import PreTrainedModel
 import src.storing.store_config as store_config
 from src.util.article import Article
 from src.parsing.sample_parser import load_articles
+from src.db.db import save_logs
 
 
 class CompositeRetriever(BaseRetriever):
     def __init__(
         self,
         retrievers: List[BaseRetriever],
+        logs_path: str,
         mode: str = 'OR',
     ) -> None:
         if mode not in ('AND', 'OR'):
@@ -31,11 +33,12 @@ class CompositeRetriever(BaseRetriever):
         
         self._retrievers = retrievers
         super().__init__()
+        self.logs_path = logs_path
 
-    @staticmethod
-    def _save_metrics(time_metric: Dict[int, float]):
-        pass
-        # print(time_metric)
+    # @staticmethod
+    def _save_metrics(self, time_metric: Dict[int, float]):
+        for num, t in time_metric.items():
+            save_logs("retreiver_" + str(num), t, self.logs_path)
 
     def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         results_by_retriever: List[List[NodeWithScore]] = []
@@ -128,6 +131,7 @@ def load_bm25_retriever(index_path: str):
 
 def load_retriever(vector_index_path: str,
                    embed_model: PreTrainedModel,
+                   logs_path: str,
                    k_vector_search: int = 5,
                    article_path: Optional[str] = None,
                    bm25_index_path: Optional[str] = None,
@@ -159,5 +163,5 @@ def load_retriever(vector_index_path: str,
                                                           bm25_index_path)
         retrievers.append(bm25_retriever)
     
-    retriever = CompositeRetriever(retrievers)
+    retriever = CompositeRetriever(retrievers, logs_path=logs_path)
     return retriever

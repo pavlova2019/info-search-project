@@ -1,13 +1,14 @@
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from typing import Optional, Dict, List
+from src.db.db import save_logs
 
 class CustomHuggingFaceEmbedding(HuggingFaceEmbedding):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, logs_path: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._logs_path = logs_path
 
     def _save_metrics(self, execution_time: float) -> None:
-        pass
-        # print(execution_time)
+        save_logs("embedder", execution_time, self._logs_path)
 
     def _embed_with_retry(
         self,
@@ -22,8 +23,10 @@ class CustomHuggingFaceEmbedding(HuggingFaceEmbedding):
             
 
 def load_embedder(model_name: str,
+                  logs_path: str,
                   model_kwargs: Optional[Dict] = None):
     return CustomHuggingFaceEmbedding(
+        logs_path=logs_path,
         model_name=model_name,
         trust_remote_code=True,
         device='cuda:0',
