@@ -17,5 +17,3 @@ hfcache/
 
 # Ignore environment variables
 .env
-
-data/

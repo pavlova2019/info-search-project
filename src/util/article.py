@@ -25,8 +25,8 @@ class Article(Document):
                 "category": category,
                 "tags": tags
             },
-            excluded_llm_metadata_keys=[],
-            excluded_embed_metadata_keys=["published", "authors"],
+            excluded_llm_metadata_keys=["tags"],
+            excluded_embed_metadata_keys=["published", "category", "tags"],
             metadata_seperator="::",
             metadata_template="{key}=>{value}",
             text_template="Metadata: {metadata_str}\n-----\nContent: {content}",
@@ -49,3 +49,4 @@ class Article(Document):
             category="",
             tags=[]
         )
+    

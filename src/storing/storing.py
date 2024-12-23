@@ -149,7 +149,7 @@ def load_retriever(vector_index_path: str,
     if bm25_index_path:
         if os.path.exists(bm25_index_path):
             bm25_retriever = load_bm25_retriever(bm25_index_path)
-            if loaded_bm25_retriever.similarity_top_k != k_text_search:
+            if bm25_retriever.similarity_top_k != k_text_search:
                 bm25_retriever = collect_and_write_bm25_index(vector_index.docstore,
                                                               k_text_search,
                                                               bm25_index_path)
