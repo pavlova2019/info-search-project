@@ -1,8 +1,9 @@
 import os
+import time
 import yaml
 import src.config
 from typing import Optional, Dict
-from src.db.db import setup_database
+from src.db.db import save_logs, setup_database
 from src.text_gen.llm import load_llm_and_qa_tmpl
 from src.embedders.embedder import load_embedder
 from src.storing.storing import load_retriever
@@ -61,7 +62,10 @@ def creating_query_engine(
 query_engine = creating_query_engine()
 
 def query_rag_system(query):
-    return str(query_engine.query(query))
+    start_time = time.time()
+    response = str(query_engine.query(query))
+    save_logs("end2end", time.time() - start_time, hyps['paths']['logs_db'])
+    return response
 
 
 if __name__ == "__main__":
