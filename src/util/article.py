@@ -11,7 +11,7 @@ class Article(Document):
             article_id: str,
             published: Timestamp,
             title: str,
-            authors: list[str],
+            # authors: list[str],
             category: str,
             tags: list[str]
             ):
@@ -21,7 +21,7 @@ class Article(Document):
                 # "id": article_id,
                 "published": published,
                 "title": title,
-                "authors": authors,
+                # "authors": authors,
                 "category": category,
                 "tags": tags
             },
@@ -45,7 +45,7 @@ class Article(Document):
             article_id="https://arxiv.org/abs/cool_" + str(unique_num),
             published=Timestamp(0),
             title="Cool Article #" + str(unique_num),
-            authors=["Cool Guy"],
+            # authors=["Cool Guy"],
             category="",
             tags=[]
         )
