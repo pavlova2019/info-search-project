@@ -63,7 +63,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         text=response,
         reply_markup=reply_markup,
-        parse_mode=ParseMode.HTML
+        parse_mode=ParseMode.MARKDOWN_V2 # HTML
     )
     
     context.user_data['last_response'] = {
