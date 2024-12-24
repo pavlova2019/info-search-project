@@ -13,3 +13,4 @@ hfcache/
 # Ignore IDE folder
 .vscode/
 
+.env
