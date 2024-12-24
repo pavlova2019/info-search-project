@@ -12,12 +12,16 @@ embed_model:
 
 retriever:
     k_vector_search: 3
-    k_text_search: 1
+    k_text_search: 3
 
 paths:
-    dataset_w_articles: './data/small_dataset.json'
+    dataset_w_articles: './data/articles.jsonl'
     ratings_db: './data/db/ratings.db'
     logs_db: './data/db/logs.db'
-    vector_index: '/storage/st079069/infosearch/test_rag/info-search-project/data/db/vector_index'
-    text_index: null  # path to enable bm25 retriever
+    vector_index: './data/db/vector_index'
+    text_index: '.data/db/bm25_retriever'  # path to enable bm25 retriever
     cache_dir: './hfcache'
+
+ragas:
+    ragas_dataset: './data/ragas_dataset.jsonl'
+    llm_evaluator: "google/gemma-2-9b-it"
