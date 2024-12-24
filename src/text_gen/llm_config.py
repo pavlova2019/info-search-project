@@ -82,32 +82,10 @@ qwen_25_7b_inst_config = LLMModelConfig(
 )
 
 
-gemma_2_9b_inst_config = LLMModelConfig(
-    model_name="google/gemma-2-9b-it",
-    system_prompt="System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context.",
-    instruction="Please give a full and complete answer for the question. For the answer, be sure to use only the presented context",
-    text_qa_template = (
-        "{instruction}"
-        " Context for answer: "
-        "{context_str}. "
-        "{query_str}"
-    ),
-    generate_config = {
-        'temperature': 0.2,
-        'top_k': 30,
-        'top_p': 0.9,
-        'repetition_penalty': 1.12,
-        'presence_penalty': 1.0,
-        'frequency_penalty': 1.0,
-    }
-)
-
-
 models: List[LLMModelConfig] = [
     nvidia_llama3_8b_config,
     qwen_25_7b_inst_config,
     mistral_nemo_12b_inst_config,
-    gemma_2_9b_inst_config
 ]
 
 models_config = {
