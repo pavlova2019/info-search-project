@@ -1,12 +1,10 @@
 from datetime import timezone
 
-import telegram
 from telegram import (
     Update,
     InlineKeyboardButton,
     InlineKeyboardMarkup, 
 )
-
 from telegram.ext import (
     ContextTypes,
     CommandHandler,
@@ -14,6 +12,7 @@ from telegram.ext import (
     filters,
     CallbackQueryHandler,
 )
+from telegram.constants import ParseMode
 
 from src.db.db import save_rating
 from src.rag import query_rag_system
@@ -64,7 +63,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         text=response,
         reply_markup=reply_markup,
-        parse_mode=telegram.ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
     
     context.user_data['last_response'] = {

@@ -3,11 +3,11 @@ import time
 import yaml
 import src.config
 from typing import Optional, Dict
-from src.util.meta_data import get_str_metadata
-from src.db.db import save_logs, setup_database
-from src.text_gen.llm import load_llm_and_qa_tmpl
-from src.embedders.embedder import load_embedder
+from src.util.output_format import get_output
 from src.storing.storing import load_retriever
+from src.db.db import save_logs, setup_database
+from src.embedders.embedder import load_embedder
+from src.text_gen.llm import load_llm_and_qa_tmpl
 from llama_index.core.query_engine import RetrieverQueryEngine
 
 # loading hyperparameters
@@ -66,8 +66,7 @@ def query_rag_system(query):
     start_time = time.time()
     response = query_engine.query(query)
     save_logs("end2end", time.time() - start_time, hyps['paths']['logs_db'])
-    titles = get_str_metadata(response)
-    return f"Found papers: {titles}\n{str(response)}"
+    return get_output(response)
 
 
 if __name__ == "__main__":
