@@ -20,6 +20,7 @@ LLM_MODEL = Literal[
     "nvidia/Llama3-ChatQA-2-8B",
     "mistralai/Mistral-Nemo-Instruct-2407",
     "Qwen/Qwen2.5-7B-Instruct",
+    "google/gemma-2-9b-it",
 ]
 
 EMBED_MODEL = Literal[
