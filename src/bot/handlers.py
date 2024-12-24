@@ -1,5 +1,6 @@
 from datetime import timezone
 
+import telegram
 from telegram import (
     Update,
     InlineKeyboardButton,
@@ -62,7 +63,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=response,
-        reply_markup=reply_markup
+        reply_markup=reply_markup,
+        parse_mode=telegram.ParseMode.MARKDOWN_V2
     )
     
     context.user_data['last_response'] = {
