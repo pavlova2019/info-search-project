@@ -148,19 +148,27 @@ def load_retriever(vector_index_path: str,
     vector_retriever = vector_index.as_retriever(similarity_top_k=k_vector_search)
     retrievers.append(vector_retriever)
 
-    # check text index 
     if bm25_index_path:
-        if os.path.exists(bm25_index_path):
-            bm25_retriever = load_bm25_retriever(bm25_index_path)
-            if bm25_retriever.similarity_top_k != k_text_search:
-                bm25_retriever = collect_and_write_bm25_index(vector_index.docstore,
-                                                              k_text_search,
-                                                              bm25_index_path)
-        else:
-            bm25_retriever = collect_and_write_bm25_index(vector_index.docstore,
-                                                          k_text_search,
-                                                          bm25_index_path)
+        bm25_retriever = collect_and_write_bm25_index(
+            vector_index.docstore,
+            k_text_search,
+            bm25_index_path
+        )
         retrievers.append(bm25_retriever)
+
+    # check text index 
+    # if bm25_index_path:
+    #    if os.path.exists(bm25_index_path):
+    #        bm25_retriever = load_bm25_retriever(bm25_index_path)
+    #        if bm25_retriever.similarity_top_k != k_text_search:
+    #            bm25_retriever = collect_and_write_bm25_index(vector_index.docstore,
+    #                                                          k_text_search,
+    #                                                          bm25_index_path)
+    #    else:
+    #        bm25_retriever = collect_and_write_bm25_index(vector_index.docstore,
+    #                                                      k_text_search,
+    #                                                      bm25_index_path)
+    #    retrievers.append(bm25_retriever)
     
     retriever = CompositeRetriever(retrievers, logs_path=logs_path)
     return retriever
