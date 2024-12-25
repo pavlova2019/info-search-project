@@ -1,5 +1,5 @@
 llm_model:
-    model_name: "nvidia/Llama3-ChatQA-2-8B"
+    model_name: "mistralai/Mistral-Nemo-Instruct-2407"
     max_new_tokens: 512
 
 embed_model:
@@ -11,13 +11,13 @@ embed_model:
         default_task: 'retrieval.passage'
 
 retriever:
-    k_vector_search: 3
+    k_vector_search: 5
     k_text_search: 1
 
 paths:
     dataset_w_articles: './data/small_dataset.json'
     ratings_db: './data/db/ratings.db'
     logs_db: './data/db/logs.db'
-    vector_index: '/storage/st079069/infosearch/test_rag/info-search-project/data/db/vector_index'
+    vector_index: './data/db/vector_index'
     text_index: null  # path to enable bm25 retriever
     cache_dir: './hfcache'
