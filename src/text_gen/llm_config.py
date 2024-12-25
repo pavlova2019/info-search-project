@@ -8,6 +8,7 @@ class LLMModelConfig:
     model_name: str
     system_prompt: str
     instruction: str
+    max_model_len: int
     text_qa_template: str
     generate_config: Dict
 
@@ -23,6 +24,7 @@ nvidia_llama3_8b_config = LLMModelConfig(
     model_name = "nvidia/Llama3-ChatQA-2-8B",
     system_prompt = "System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context.",
     instruction = "Please give a full and complete answer for the question just based on the context for answer. Give me structured answers.",
+    max_model_len=8192,
     text_qa_template = (
         "{instruction}"
         " Context for answer: "
@@ -44,6 +46,7 @@ mistral_nemo_12b_inst_config = LLMModelConfig(
     model_name="mistralai/Mistral-Nemo-Instruct-2407",
     system_prompt="System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context.",
     instruction = "Please give a full and complete answer for the question just based on the context for answer.",
+    max_model_len=8192,
     text_qa_template = (
         "{instruction}"
         " Context for answer: "
@@ -65,6 +68,7 @@ qwen_25_7b_inst_config = LLMModelConfig(
     model_name="Qwen/Qwen2.5-7B-Instruct",
     system_prompt="system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.",
     instruction="Please give a full and complete answer for the question. For the answer, be sure to use only the presented context",
+    max_model_len=8192,
     text_qa_template = (
         "{instruction}"
         " Context for answer: "
@@ -98,5 +102,4 @@ vllm_config = {
     'device':'cuda',
     'enable_prefix_caching': True,
     'enforce_eager': True,
-    'max_model_len': 32000,
 }

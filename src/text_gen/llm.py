@@ -167,6 +167,7 @@ def load_llm_and_qa_tmpl(model_name: str, max_new_tokens: int, cache_dir: str, l
     if model_name not in models_config:
         raise ValueError(f"{model_name} is not supported.")
 
+    vllm_config['max_model_len'] = models_config[model_name].max_model_len
     qa_prompt_tmpl = PromptTemplate(models_config[model_name].text_qa_template)
     
     llm = CustomVllm(
